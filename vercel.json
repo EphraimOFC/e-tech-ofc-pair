@@ -1,7 +1,9 @@
 {
+  "rewrites": [
+    { "source": "/favicon.ico", "destination": "/api/favicon.js" },
+    { "source": "/(.*)", "destination": "/api/pair.js" }
+  ],
   "functions": {
-    "api/pair.js": {
-      "maxDuration": 60
-    }
+    "api/pair.js": { "maxDuration": 60 }
   }
 }
