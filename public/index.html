@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html><head><title>E TECH OFC PAIR</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{background:#000;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0}
+.card{background:#111;border:2px solid #00ff88;border-radius:20px;padding:25px;width:92%;max-width:380px;text-align:center}
+input{width:90%;padding:14px;border-radius:10px;border:none;margin:12px 0;background:#222;color:#fff;text-align:center}
+button{width:95%;padding:14px;border-radius:10px;border:none;background:#00ff88;color:#000;font-weight:bold;font-size:16px}
+#code{font-size:30px;color:#00ff88;margin-top:15px;font-weight:bold}
+.toggle{display:flex;gap:8px;margin:16px 0}
+.toggle button{flex:1;padding:10px;font-size:14px}
+.toggle .active{background:#00ff88;color:#000}
+.toggle .inactive{background:#333;color:#fff}
+#qrDisplay{text-align:center;margin-top:16px}
+#qrDisplay img{max-width:250px;border-radius:8px}
+.hidden{display:none}
+</style></head><body>
+<div class="card">
+<h2 style="color:#00ff88">E TECH OFC</h2><p>MR EPHRAIM OFC - OFFICIAL PAIR</p>
+<p>Pair Site LIVE ✅ Render</p>
+
+<div class="toggle">
+<button id="pairBtn" class="active" onclick="setMode('pair')">Pair Code</button>
+<button id="qrBtn" class="inactive" onclick="setMode('qr')">QR Code</button>
+</div>
+
+<div id="pairSection">
+<input id="num" placeholder="2347072956206" value="2347072956206"/>
+<button onclick="getCode()">GET PAIR CODE</button>
+</div>
+
+<div id="qrSection" class="hidden">
+<button onclick="getQR()">GENERATE QR CODE</button>
+<div id="qrDisplay"></div>
+</div>
+
+<div id="code"></div><p id="msg"></p>
+
+<script>
+let mode='pair';
+function setMode(m){
+ mode=m;
+ document.getElementById('pairBtn').className=m==='pair'?'active':'inactive';
+ document.getElementById('qrBtn').className=m==='qr'?'active':'inactive';
+ document.getElementById('pairSection').classList.toggle('hidden',m!=='pair');
+ document.getElementById('qrSection').classList.toggle('hidden',m!=='qr');
+ document.getElementById('code').innerText='';
+ document.getElementById('msg').innerText='';
+ document.getElementById('qrDisplay').innerHTML='';
+}
+async function getCode(){
+ const n=document.getElementById('num').value;
+ if(!n){alert('Enter number');return}
+ document.getElementById('code').innerText='Wait 15 sec...';
+ try{
+  const r=await fetch('/pair?number='+n,{method:'GET'});
+  const d=await r.json();
+  if(d.code){document.getElementById('code').innerText=d.code;document.getElementById('msg').innerText='WhatsApp > Linked Devices > Link with phone number';}
+  else{document.getElementById('code').innerText='Error';document.getElementById('msg').innerText=JSON.stringify(d);}
+ }catch(e){document.getElementById('code').innerText='Failed';document.getElementById('msg').innerText=e.message;}
+}
+async function getQR(){
+ document.getElementById('qrDisplay').innerHTML='<p>Generating QR...</p>';
+ try{
+  const r=await fetch('/qr',{method:'GET'});
+  const d=await r.json();
+  if(d.qr){
+   document.getElementById('qrDisplay').innerHTML='<img src="'+d.qr+'" alt="QR Code"/><br><small>'+(d.instructions?.join('<br>')||'Scan with WhatsApp > Linked Devices')+'</small>';
+  }else{document.getElementById('qrDisplay').innerHTML='<p style="color:#ff8f8f">Error: '+(d.code||'Failed')+'</p>';}
+ }catch(e){document.getElementById('qrDisplay').innerHTML='<p style="color:#ff8f8f">Failed: '+e.message+'</p>';}
+}
+</script>
+</div></body></html>
