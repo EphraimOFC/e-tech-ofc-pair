@@ -1,7 +1,7 @@
 {
   "name": "e-tech-ofc-pair",
   "version": "2.0.0",
-  "description": "E TECH OFC Pair Site by MR EPHRAIM OFC - 2347072956206",
+  "description": "E TECH OFC Pair Site - MR EPHRAIM OFC",
   "main": "api/pair.js",
   "scripts": {
     "start": "node api/pair.js"
