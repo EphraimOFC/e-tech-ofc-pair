@@ -4,6 +4,9 @@
     { "source": "/(.*)", "destination": "/api/pair.js" }
   ],
   "functions": {
-    "api/pair.js": { "maxDuration": 60 }
+    "api/pair.js": { 
+      "maxDuration": 60,
+      "memory": 1024
+    }
   }
 }
