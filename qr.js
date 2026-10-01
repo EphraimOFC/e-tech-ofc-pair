@@ -1,7 +1,7 @@
 import express from 'express';
 import fs from 'fs';
 import pino from 'pino';
-import { makeWASocket, useMultiFileAuthState, Browsers, jidNormalizedUser, fetchLatestBaileysVersion, DisconnectReason } from '@vreden/meta';
+import { makeWASocket, useMultiFileAuthState, Browsers, jidNormalizedUser, fetchLatestBaileysVersion, DisconnectReason } from '@whiskeysockets/baileys';
 import QRCode from 'qrcode';
 
 const router = express.Router();

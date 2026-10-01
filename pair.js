@@ -1,7 +1,7 @@
 import express from 'express';
 import fs from 'fs';
 import pino from 'pino';
-import { makeWASocket, useMultiFileAuthState, delay, Browsers, jidNormalizedUser, fetchLatestBaileysVersion, DisconnectReason } from '@vreden/meta';
+import { makeWASocket, useMultiFileAuthState, delay, Browsers, jidNormalizedUser, fetchLatestBaileysVersion, DisconnectReason } from '@whiskeysockets/baileys';
 import pn from 'awesome-phonenumber';
 
 const router = express.Router();

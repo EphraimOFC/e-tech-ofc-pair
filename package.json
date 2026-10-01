@@ -6,7 +6,7 @@
   "scripts": { "start": "node index.js" },
   "engines": { "node": ">=20.0.0" },
   "dependencies": {
-    "@vreden/meta": "^9.2.2",
+    "@whiskeysockets/baileys": "7.0.0-rc14",
     "awesome-phonenumber": "7.2.0",
     "express": "^4.21.2",
     "pino": "9.5.0",
