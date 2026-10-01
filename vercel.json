@@ -1,15 +1,7 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/pair.js",
-      "use": "@vercel/node"
+  "functions": {
+    "api/pair.js": {
+      "maxDuration": 60
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "api/pair.js"
-    }
-  ]
+  }
 }
