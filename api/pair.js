@@ -1,5 +1,4 @@
 module.exports = async (req, res) => {
-  // GET = Show page ONLY - NO BAILEYS IMPORT - So it will NEVER 500
   if (req.method === 'GET') {
     res.setHeader('Content-Type', 'text/html');
     return res.send(`
@@ -28,7 +27,7 @@ async function getCode(){
  try{
   const r=await fetch('/?number='+n,{method:'POST'});
   const d=await r.json();
-  if(d.code){document.getElementById('code').innerText=d.code;document.getElementById('msg').innerText='WhatsApp > Linked Devices > Link with phone number';}
+  if(d.code){document.getElementById('code').innerText=d.code;document.getElementById('msg').innerText='WhatsApp > Linked Devices > Link with phone number > Type code FAST (20 sec)';}
   else{document.getElementById('code').innerText='Error';document.getElementById('msg').innerText=JSON.stringify(d);}
  }catch(e){document.getElementById('code').innerText='Failed';document.getElementById('msg').innerText=e.message;}
 }
@@ -37,16 +36,16 @@ async function getCode(){
     `);
   }
 
-  // POST = Generate code - Import Baileys only here
   try {
     const fs = require('fs');
     const pino = require('pino');
     const { default: makeWASocket, useMultiFileAuthState, delay, makeCacheableSignalKeyStore } = require('@whiskeysockets/baileys');
     
-    const number = (req.query.number || '').replace(/[^0-9]/g,'');
-    if(!number) return res.json({error:'Number required'});
+    let number = (req.query.number || req.body?.number || '').replace(/[^0-9]/g,'');
+    if(!number) return res.json({error:'Number required - e.g 2347072956206'});
+    if(number.length < 10) return res.json({error:'Invalid number'});
 
-    const dir = '/tmp/'+number;
+    const dir = '/tmp/' + number;
     if(fs.existsSync(dir)) fs.rmSync(dir,{recursive:true,force:true});
     fs.mkdirSync(dir,{recursive:true});
 
@@ -55,13 +54,27 @@ async function getCode(){
       auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({level:'silent'})) },
       logger: pino({level:'silent'}),
       printQRInTerminal:false,
-      browser:['E TECH OFC','Chrome','1.0']
+      browser:['Ubuntu','Chrome','20.0.04'],
     });
     sock.ev.on('creds.update', saveCreds);
-    await delay(3000);
-    const code = await sock.requestPairingCode(number);
-    return res.json({code:code});
+
+    // IMPORTANT: Wait for socket to connect to WA server
+    await delay(5000);
+
+    if(!sock.authState.creds.registered){
+        const code = await sock.requestPairingCode(number);
+        // Keep socket alive for 60 sec so code stays valid
+        setTimeout(() => {
+            try{ fs.rmSync(dir,{recursive:true,force:true}) }catch{}
+            try{ sock.ws.close() }catch{}
+        }, 60000);
+        return res.json({code: code});
+    } else {
+        return res.json({error:'Already paired, delete session'});
+    }
+
   } catch(err){
-    return res.status(200).json({error: err.message, stack: err.stack});
+    console.log(err);
+    return res.status(200).json({error: err.message});
   }
 };
